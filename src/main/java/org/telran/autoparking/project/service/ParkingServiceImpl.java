@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telran.autoparking.project.model.Car;
 import org.telran.autoparking.project.model.Parking;
-import org.telran.autoparking.project.repository.CarRepository;
 import org.telran.autoparking.project.repository.ParkingRepository;
 
 import java.util.List;
@@ -16,7 +15,7 @@ public class ParkingServiceImpl implements ParkingService {
     private ParkingRepository parkingRepository;
 
     @Autowired
-    private CarRepository carRepository;
+    private CarService carService;
 
 
     @Override
@@ -56,7 +55,7 @@ public class ParkingServiceImpl implements ParkingService {
 
     @Override
     public void parkTheCarInParking(int parkingId, int carId) {
-        Car car = carRepository.findById(carId).orElse(null);
+        Car car = carService.getCar(carId);
         Parking parking = parkingRepository.findById(parkingId).orElse(null);
 
         assert parking != null;
@@ -67,13 +66,12 @@ public class ParkingServiceImpl implements ParkingService {
     @Override
     public void removeCarFromParking(int parkingId, int carId) {
 
-        Car car = carRepository.findById(carId).orElse(null);
+        Car car = carService.getCar(carId);
         Parking parking = parkingRepository.findById(parkingId).orElse(null);
 
         assert parking != null;
         parking.getCars().remove(car);
         parkingRepository.save(parking);
-
 
     }
 }
